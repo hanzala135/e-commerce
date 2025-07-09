@@ -1,65 +1,97 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title>SPA Authentication</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login Page</title>
     <style>
       body {
-        font-family: Arial, sans-serif;
-        background-color: #f2f2f2;
         margin: 0;
-        padding: 20px;
+        padding: 0;
         display: flex;
         justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background: linear-gradient(to right, #10161c, #1e484f);
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
       }
 
-      #app {
-        background-color: white;
-        padding: 30px;
-        border-radius: 10px;
+      .container {
         width: 300px;
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        padding: 30px 25px;
+        text-align: center;
       }
 
       h2 {
-        text-align: center;
+        margin-bottom: 20px;
+        color: #2c3e50;
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
       }
 
       input {
-        width: 100%;
         padding: 10px;
-        margin: 8px 0;
-        box-sizing: border-box;
+        margin: 10px 0;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        transition: border 0.3s;
       }
 
-      button {
-        width: 100%;
+      input:focus {
+        outline: none;
+        border-color: #1e484f;
+      }
+
+      .login_btn,
+      .rgst_btn {
         padding: 10px;
-        background-color: #4caf50;
+        background-color: #175760;
+        color: #fff;
         border: none;
-        color: white;
+        border-radius: 6px;
+        font-weight: bold;
+      }
+
+      .login_btn:hover,
+      .rgst_btn:hover {
+        background-color: #1b2329;
         cursor: pointer;
-        margin-top: 10px;
       }
 
-      button:hover {
-        background-color: #45a049;
-      }
-
-      .toggle {
-        text-align: center;
+      .down {
         margin-top: 15px;
+        display: flex;
+        justify-content: center;
+        gap: 5px;
+        font-size: 14px;
       }
 
-      .toggle button {
-        background-color: #008cba;
+      .registor_btn,
+      .log_btn {
+        color: #1e484f;
+        font-weight: bold;
+        cursor: pointer;
+        transition: color 0.3s;
+      }
+
+      .registor_btn:hover,
+      .log_btn:hover {
+        color: #086754;
       }
     </style>
   </head>
-
   <body>
-    <div id="app"></div>
+    <div class="container"></div>
 
     <script>
-      let users = [
+      let dis = 1;
+      let data = [
         {
           firstname: "Alice",
           lastname: "Johnson",
@@ -92,98 +124,99 @@
         },
       ];
 
-      let currentView = "login";
-      let loggedInUser = null;
+      let container = document.querySelector(".container");
 
-      const app = document.getElementById("app");
-
-      function showView() {
-        if (currentView === "login") {
-          app.innerHTML = `
-          <h2>Login</h2>
-          <input type="email" id="loginEmail" placeholder="Email" />
-          <input type="password" id="loginPassword" placeholder="Password" />
-          <button onclick="login()">Login</button>
-          <div class="toggle">
-            <p>Don't have an account?</p>
-            <button onclick="switchView('register')">Go to Register</button>
-          </div>
-        `;
-        } else if (currentView === "register") {
-          app.innerHTML = `
-          <h2>Register</h2>
-          <input type="text" id="firstName" placeholder="First Name" />
-          <input type="text" id="lastName" placeholder="Last Name" />
-          <input type="email" id="regEmail" placeholder="Email" />
-          <input type="password" id="regPassword" placeholder="Password" />
-          <button onclick="register()">Register</button>
-          <div class="toggle">
-            <p>Already have an account?</p>
-            <button onclick="switchView('login')">Go to Login</button>
-          </div>
-        `;
-        } else if (currentView === "welcome") {
-          app.innerHTML = `
-          <h2>Welcome, ${loggedInUser.firstname}!</h2>
-          <p>You are now logged in.</p>
-          <button onclick="logout()">Logout</button>
-        `;
+      function display(di) {
+        if (di === 1) {
+          container.innerHTML = `
+            <h2>Login</h2>
+            <form id="loginForm">
+              <input type="text" id="logemail" placeholder="Email:name123@example.com" required />
+              <input type="password" id="logpass" placeholder="Password" required />
+              <button type="submit" class="login_btn">Login</button>
+              <div class="down">
+                <span>Don't have an account?</span>
+                <span class="registor_btn">Register now</span>
+              </div>
+            </form>
+          `;
+        } else if (di === 2) {
+          container.innerHTML = `
+            <h2>Register</h2>
+            <form id="registerForm">
+              <input type="text" id="fname" placeholder="First name" required />
+              <input type="text" id="lname" placeholder="Second name" required />
+              <input type="text" id="remail" placeholder="Email" required />
+              <input type="password" id="rpass" placeholder="Password" required />
+              <button type="submit" class="rgst_btn">Register</button>
+              <div class="down">
+                <span>Have an account?</span>
+                <span class="log_btn">Login Here</span>
+              </div>
+            </form>
+          `;
+        } else if (di === 3) {
+          container.innerHTML = `<h2>WELCOME</h2>`;
         }
       }
 
-      function switchView(view) {
-        currentView = view;
-        showView();
-      }
+      display(dis);
 
-      function register() {
-        const firstName = document.getElementById("firstName").value.trim();
-        const lastName = document.getElementById("lastName").value.trim();
-        const email = document.getElementById("regEmail").value.trim();
-        const password = document.getElementById("regPassword").value.trim();
+      document.addEventListener("click", function (e) {
+        if (e.target.classList.contains("registor_btn")) {
+          dis = 2;
+          display(dis);
+        } else if (e.target.classList.contains("log_btn")) {
+          dis = 1;
+          display(dis);
+        }
+      });
 
-        if (!firstName || !lastName || !email || !password) {
-          alert("Please fill in all fields.");
-          return;
+      document.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        if (e.target.id === "loginForm") {
+          let em = document.getElementById("logemail").value;
+          let pass = document.getElementById("logpass").value;
+          let found = false;
+
+          for (let x of data) {
+            if (x.email === em) {
+              found = true;
+              if (x.password === pass) {
+                display(3);
+              } else {
+                alert("You entered the wrong password");
+              }
+              break;
+            }
+          }
+
+          if (!found) {
+            alert("You entered the wrong email");
+          }
         }
 
-        const exists = users.find((user) => user.email === email);
-        if (exists) {
-          alert("User already exists.");
-          return;
+        if (e.target.id === "registerForm") {
+          let fname = document.getElementById("fname").value;
+          let lname = document.getElementById("lname").value;
+          let remail = document.getElementById("remail").value;
+          let rpass = document.getElementById("rpass").value;
+
+          data.push({
+            firstname: fname,
+            lastname: lname,
+            email: remail,
+            password: rpass,
+          });
+
+          alert("Successfully registered! Now you may log in.");
+          dis = 1;
+          display(dis);
         }
-
-        users.push({
-          firstname: firstName,
-          lastname: lastName,
-          email,
-          password,
-        });
-        alert("Registered successfully! Now login.");
-        switchView("login");
-      }
-
-      function login() {
-        const email = document.getElementById("loginEmail").value.trim();
-        const password = document.getElementById("loginPassword").value.trim();
-        const user = users.find(
-          (u) => u.email === email && u.password === password
-        );
-        if (user) {
-          loggedInUser = user;
-          currentView = "welcome";
-        } else {
-          alert("Invalid email or password.");
-        }
-      }
-
-      function logout() {
-        loggedInUser = null;
-        currentView = "login";
-        showView();
-      }
-
-      showView();
+      });
+      function boom(){
+       var ="this is something";    }
     </script>
   </body>
 </html>
